@@ -1,0 +1,45 @@
+from collections import defaultdict
+
+
+class InventoryGraph:
+    def __init__(self, number_of_items):
+        self.graph = defaultdict(list)
+        self.number_of_items = number_of_items
+
+    def addDependency(self, item, dependent_item):
+        self.graph[item].append(dependent_item)
+
+    def topologicalSortUtil(self, item, visited, stack):
+        visited.append(item)
+
+        for dependent_item in self.graph[item]:
+            if dependent_item not in visited:
+                self.topologicalSortUtil(dependent_item, visited, stack)
+
+        stack.insert(0, item)
+
+    def topologicalSort(self):
+        visited = []
+        stack = []
+
+        for item in list(self.graph):
+            if item not in visited:
+                self.topologicalSortUtil(item, visited, stack)
+
+        print("Topological Sort Order:")
+        print(stack)
+
+
+# Main Program
+if __name__ == "__main__":
+    customInventory = InventoryGraph(8)
+    customInventory.addDependency("A", "C")
+    customInventory.addDependency("C", "E")
+    customInventory.addDependency("E", "H")
+    customInventory.addDependency("E", "F")
+    customInventory.addDependency("F", "G")
+    customInventory.addDependency("B", "D")
+    customInventory.addDependency("B", "C")
+    customInventory.addDependency("D", "F")
+
+    customInventory.topologicalSort()
