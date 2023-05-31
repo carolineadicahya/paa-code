@@ -1,0 +1,136 @@
+# algoritma BST
+import queue
+
+
+class Item:
+    def __init__(self, item_id, name, quantity):
+        self.item_id = item_id
+        self.name = name
+        self.quantity = quantity
+
+    def __repr__(self):
+        return f"Item ID: {self.item_id}, Name: {self.name}, Quantity: {self.quantity}"
+
+
+class BSTNode:
+    def __init__(self, data):
+        self.data = data
+        self.leftChild = None
+        self.rightChild = None
+
+
+def insertNode(rootNode, item):
+    if rootNode.data is None:
+        rootNode.data = item
+    elif item.item_id <= rootNode.data.item_id:
+        if rootNode.leftChild is None:
+            rootNode.leftChild = BSTNode(item)
+        else:
+            insertNode(rootNode.leftChild, item)
+    else:
+        if rootNode.rightChild is None:
+            rootNode.rightChild = BSTNode(item)
+        else:
+            insertNode(rootNode.rightChild, item)
+    return "The node has been successfully inserted"
+
+
+def levelOrderTraversal(rootNode):
+    if not rootNode:
+        return
+    else:
+        customQueue = queue.Queue()
+        customQueue.enqueue(rootNode)
+        while not (customQueue.isEmpty()):
+            root = customQueue.dequeue()
+            print(root.value.data)
+            if root.value.leftChild is not None:
+                customQueue.enqueue(root.value.leftChild)
+            if root.value.rightChild is not None:
+                customQueue.enqueue(root.value.rightChild)
+
+
+def searchNode(rootNode, item_id):
+    if rootNode.data.item_id == item_id:
+        print("Item found in the inventory:")
+        print(rootNode.data)
+    elif item_id < rootNode.data.item_id:
+        if rootNode.leftChild and rootNode.leftChild.data.item_id == item_id:
+            print("Item found in the inventory:")
+            print(rootNode.leftChild.data)
+        else:
+            searchNode(rootNode.leftChild, item_id)
+    else:
+        if rootNode.rightChild and rootNode.rightChild.data.item_id == item_id:
+            print("Item found in the inventory:")
+            print(rootNode.rightChild.data)
+        else:
+            searchNode(rootNode.rightChild, item_id)
+
+
+def deleteNode(rootNode, item_id):
+    if rootNode is None:
+        return rootNode
+    if item_id < rootNode.data.item_id:
+        rootNode.leftChild = deleteNode(rootNode.leftChild, item_id)
+    elif item_id > rootNode.data.item_id:
+        rootNode.rightChild = deleteNode(rootNode.rightChild, item_id)
+    else:
+        if rootNode.leftChild is None:
+            temp = rootNode.rightChild
+            rootNode = None
+            return temp
+
+        if rootNode.rightChild is None:
+            temp = rootNode.leftChild
+            rootNode = None
+            return temp
+
+        temp = minValueNode(rootNode.rightChild)
+        rootNode.data = temp.data
+        rootNode.rightChild = deleteNode(rootNode.rightChild, temp.data.item_id)
+    return rootNode
+
+
+def minValueNode(bstNode):
+    current = bstNode
+    while current.leftChild is not None:
+        current = current.leftChild
+    return current
+
+
+def deleteBST(rootNode):
+    rootNode.data = None
+    rootNode.leftChild = None
+    rootNode.rightChild = None
+    return "The BST has been successfully deleted"
+
+
+# Main Program
+if __name__ == "__main__":
+    newBST = BSTNode(None)
+    item1 = Item(1, "Item 1", 5)
+    item2 = Item(2, "Item 2", 3)
+    item3 = Item(3, "Item 3", 7)
+    item4 = Item(4, "Item 4", 2)
+    item5 = Item(5, "Item 5", 1)
+
+    insertNode(newBST, item1)
+    insertNode(newBST, item2)
+    insertNode(newBST, item3)
+    insertNode(newBST, item4)
+    insertNode(newBST, item5)
+
+    print("Level Order Traversal:")
+    levelOrderTraversal(newBST)
+
+    search_item_id = 3
+    searchNode(newBST, search_item_id)
+
+    delete_item_id = 2
+    deleteNode(newBST, delete_item_id)
+
+    print("Level Order Traversal after deletion:")
+    levelOrderTraversal(newBST)
+
+    print(deleteBST(newBST))
