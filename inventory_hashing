@@ -1,0 +1,53 @@
+# algoritma hashing
+class Item:
+    def __init__(self, item_id, name, quantity):
+        self.item_id = item_id
+        self.name = name
+        self.quantity = quantity
+
+    def __repr__(self):
+        return f"Item ID: {self.item_id}, Name: {self.name}, Quantity: {self.quantity}"
+
+
+class HashTable:
+    def __init__(self, size):
+        self.size = size
+        self.table = [[] for _ in range(self.size)]
+
+    def hash_function(self, key):
+        return key % self.size
+
+    def insert(self, item):
+        index = self.hash_function(item.item_id)
+        self.table[index].append(item)
+
+    def search(self, item_id):
+        index = self.hash_function(item_id)
+        for item in self.table[index]:
+            if item.item_id == item_id:
+                return item
+        return None
+
+
+# Main Program
+if __name__ == "__main__":
+    item1 = Item(1, "Item 1", 5)
+    item2 = Item(2, "Item 2", 3)
+    item3 = Item(3, "Item 3", 7)
+    item4 = Item(4, "Item 4", 2)
+    item5 = Item(5, "Item 5", 1)
+
+    hash_table = HashTable(10)
+    hash_table.insert(item1)
+    hash_table.insert(item2)
+    hash_table.insert(item3)
+    hash_table.insert(item4)
+    hash_table.insert(item5)
+
+    item_id = 3
+    result = hash_table.search(item_id)
+    if result:
+        print("Item found in the inventory:")
+        print(result)
+    else:
+        print("Item not found in the inventory.")
